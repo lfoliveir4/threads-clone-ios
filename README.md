@@ -1,4 +1,4 @@
-Threads Clone
+App Threads Clone
 
 - SwiftUI
 - MVVM
