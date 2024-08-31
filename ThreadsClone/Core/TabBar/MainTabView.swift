@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MainTabView: View {
     @State private var selectedTab = 0
+    @State private var showCreationThreadView = false
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -20,7 +21,7 @@ struct MainTabView: View {
                 .onAppear { selectedTab = 1 }
                 .tag(1)
 
-            ThreadCreationView()
+            Text("")
                 .tabItem {
                     Image(systemName: "plus")
                 }
@@ -35,7 +36,7 @@ struct MainTabView: View {
                 .onAppear { selectedTab = 3 }
                 .tag(3)
 
-            ProfileView()
+            CurrentUserProfileView()
                 .tabItem {
                     Image(systemName: selectedTab == 4 ? "person.fill" : "person")
                         .environment(\.symbolVariants, selectedTab == 4 ? .fill : .none)
@@ -43,6 +44,14 @@ struct MainTabView: View {
                 .onAppear { selectedTab = 4 }
                 .tag(4)
         }
+        .onChange(of: selectedTab) { newValue in
+            showCreationThreadView = selectedTab == 2
+        }
+        .sheet(
+            isPresented: $showCreationThreadView,
+            onDismiss: { selectedTab = 0 }) {
+                ThreadCreationView()
+            }
         .tint(.black)
     }
 }

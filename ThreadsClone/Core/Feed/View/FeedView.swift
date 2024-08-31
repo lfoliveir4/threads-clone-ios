@@ -1,18 +1,36 @@
 import SwiftUI
 
 struct FeedView: View {
-    var body: some View {
-        Text("Feed View")
+    @StateObject var viewModel = FeedViewModel()
 
-        Button(action: {
-            AuthenticationService.shared.logout()
-        }, label: {
-            Text("Try Logout")
-        })
-        .padding(.top, 20)
+    var body: some View {
+        NavigationStack {
+            ScrollView(showsIndicators: false) {
+                LazyVStack {
+                    ForEach(viewModel.threads) { thread in
+                        ThreadCell(thread: thread)
+                    }
+                }
+            }
+            .refreshable {
+                Task { try await viewModel.fetchThreads() }
+            }
+            .navigationTitle("Threads")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: {}, label: {
+                    Image(systemName: "arrow.counterclockwise")
+                        .foregroundStyle(.black)
+                })
+            }
+        }
     }
 }
 
 #Preview {
-    FeedView()
+    NavigationStack {
+        FeedView()
+    }
 }
